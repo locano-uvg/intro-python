@@ -1,4 +1,27 @@
+const REPO_EJEMPLOS = 'https://github.com/locano-uvg/apb-ejemplos-2026';
+const REPO_TREE = (folder) => `${REPO_EJEMPLOS}/tree/main/${encodeURIComponent(folder)}`;
+
 export const presentations = [
+    {
+        id: 13,
+        title: "Practicar",
+        image: "./assets/07-funciones.png",
+        links: {
+            ver: "./practicar.html",
+            ejemplos: null
+        },
+        active: true
+    },
+    {
+        id: 12,
+        title: "Ejemplos del curso",
+        image: "./assets/09-listas.png",
+        links: {
+            ver: "./presentations/12-ejemplos-curso.html",
+            ejemplos: REPO_EJEMPLOS
+        },
+        active: true
+    },
     {
         id: 11,
         title: "11. Pandas",
@@ -6,7 +29,8 @@ export const presentations = [
         links: {
             ver: "./presentations/11-pandas.html",
             pdf: "./pdf/11-pandas.pdf",
-            md: "./md/11-pandas.md"
+            md: "./md/11-pandas.md",
+            ejemplos: REPO_TREE('08 - Pandas')
         },
         active: true
     },
@@ -17,7 +41,8 @@ export const presentations = [
         links: {
             ver: "./presentations/10-diccionarios.html",
             pdf: "./pdf/10-diccionarios.pdf",
-            md: "./md/10-diccionarios.md"
+            md: "./md/10-diccionarios.md",
+            ejemplos: REPO_TREE('07 - Diccionarios')
         },
         active: true
     },
@@ -28,7 +53,8 @@ export const presentations = [
         links: {
             ver: "./presentations/09-listas.html",
             pdf: "./pdf/09-listas.pdf",
-            md: "./md/09-listas.md"
+            md: "./md/09-listas.md",
+            ejemplos: REPO_TREE('06 - Listas')
         },
         active: true
     },
@@ -39,7 +65,8 @@ export const presentations = [
         links: {
             ver: "./presentations/08-cadenas.html",
             pdf: "./pdf/08-cadenas.pdf",
-            md: "./md/08-cadenas.md"
+            md: "./md/08-cadenas.md",
+            ejemplos: REPO_TREE('05 - Cadenas')
         },
         active: true
     },
@@ -50,7 +77,8 @@ export const presentations = [
         links: {
             ver: "./presentations/07-funciones.html",
             pdf: "./pdf/07-funciones.pdf",
-            md: "./md/07-funciones.md"
+            md: "./md/07-funciones.md",
+            ejemplos: REPO_TREE('04 - Funciones')
         },
         active: true
     },
@@ -61,7 +89,8 @@ export const presentations = [
         links: {
             ver: "./presentations/06-estructuras-repeticion.html",
             pdf: "./pdf/06-estructuras-repeticion.pdf",
-            md: "./md/06-estructuras-repeticion.md"
+            md: "./md/06-estructuras-repeticion.md",
+            ejemplos: REPO_TREE('03 - Estructuras de repeticion')
         },
         active: true
     },
@@ -72,7 +101,8 @@ export const presentations = [
         links: {
             ver: "./presentations/05-estructuras-condicionales.html",
             pdf: "./pdf/05-estructuras-condicionales.pdf",
-            md: "./md/05-estructuras-condicionales.md"
+            md: "./md/05-estructuras-condicionales.md",
+            ejemplos: REPO_TREE('02 - Estructuras Condicionales')
         },
         active: true
     },
@@ -83,7 +113,8 @@ export const presentations = [
         links: {
             ver: "./presentations/04-vairables-expresiones.html",
             pdf: "./pdf/04-variables-expresiones.pdf",
-            md: "./md/04-variables-expresiones.md"
+            md: "./md/04-variables-expresiones.md",
+            ejemplos: REPO_TREE('01 - Variables y Expresiones')
         },
         active: true
     },
@@ -110,7 +141,7 @@ export const presentations = [
         active: true
     },
     {
-        id: 1   ,
+        id: 1,
         title: "01. Introducción al Curso",
         image: "./assets/01-intro-curso.png",
         links: {

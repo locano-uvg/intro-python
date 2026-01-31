@@ -10,6 +10,27 @@ function renderPresentations(items) {
             return;
         }
 
+        const links = presentation.links;
+        const actions = [
+            `<a href="${links.ver}" class="card-btn card-btn-primary" target="_blank">
+                <i class="fa-solid fa-magnifying-glass"></i> Ver
+            </a>`
+        ];
+        if (links.pdf) {
+            actions.push(`<a href="${links.pdf}" class="card-btn card-btn-secondary" target="_blank">
+                <i class="fa-solid fa-download"></i> PDF
+            </a>`);
+        }
+        if (links.md) {
+            actions.push(`<a href="${links.md}" class="card-btn card-btn-secondary" target="_blank">
+                <i class="fa-solid fa-file-lines"></i> MD
+            </a>`);
+        }
+        if (links.ejemplos) {
+            actions.push(`<a href="${links.ejemplos}" class="card-btn card-btn-secondary" target="_blank" title="Código en GitHub">
+                <i class="fa-brands fa-github"></i> Ejemplos
+            </a>`);
+        }
         const card = document.createElement('div');
         card.className = 'presentation-card';
         card.style.animationDelay = `${index * 60}ms`;
@@ -17,17 +38,7 @@ function renderPresentations(items) {
             <div class="card-content">
                 <img src="${presentation.image}" alt="${presentation.title}" class="card-img">
                 <h3 class="card-title">${presentation.title}</h3>
-                <div class="card-actions">
-                    <a href="${presentation.links.ver}" class="card-btn card-btn-primary" target="_blank">
-                        <i class="fa-solid fa-magnifying-glass"></i> Ver
-                    </a>
-                    <a href="${presentation.links.pdf}" class="card-btn card-btn-secondary" target="_blank">
-                        <i class="fa-solid fa-download"></i> PDF
-                    </a>
-                    <a href="${presentation.links.md}" class="card-btn card-btn-secondary" target="_blank">
-                        <i class="fa-solid fa-file-lines"></i> MD
-                    </a>
-                </div>
+                <div class="card-actions">${actions.join('')}</div>
             </div>
         `;
         grid.appendChild(card);

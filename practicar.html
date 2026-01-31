@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practicar Python - Introducción a Python</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="./common/style.css" />
+    <style>
+        .practicar-wrap { max-width: 900px; margin: 0 auto; padding: 1.5rem; position: relative; z-index: 1; }
+        .practicar-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        .practicar-header h1 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--charcoal); }
+        .practicar-header a { color: var(--slate); text-decoration: none; font-weight: 600; }
+        .practicar-header a:hover { text-decoration: underline; }
+        .editor-section label, .output-section label { display: block; font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--charcoal); }
+        #editor { width: 100%; min-height: 220px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 14px; line-height: 1.5; padding: 1rem; border: 2px solid var(--slate); border-radius: 8px; background: #fff; resize: vertical; }
+        #editor:focus { outline: none; border-color: var(--gold-accent); }
+        .run-bar { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+        .run-bar button { font-family: var(--font-heading); font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 8px; border: 2px solid var(--slate); background: var(--slate); color: white; cursor: pointer; }
+        .run-bar button:hover { background: var(--blue-accent); border-color: var(--blue-accent); }
+        .run-bar button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .run-bar .status { font-size: 0.9rem; color: var(--slate); }
+        .output-section { margin-top: 1.5rem; }
+        #output { width: 100%; min-height: 160px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 14px; line-height: 1.5; padding: 1rem; border: 2px solid var(--charcoal); border-radius: 8px; background: #0C2C55; color: #e0e0e0; white-space: pre-wrap; word-break: break-word; }
+        #output.empty { color: #888; }
+        #output.error { border-color: #c62828; background: #1a0a0a; color: #ff8a80; }
+        .output-section small { display: block; margin-top: 0.5rem; color: var(--slate); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="geo-shape"></div>
+    <div class="geo-shape"></div>
+    <div class="geo-shape"></div>
+
+    <div class="practicar-wrap">
+        <header class="practicar-header">
+            <h1><i class="fa-solid fa-terminal"></i> Practicar Python</h1>
+            <a href="./index.html"><i class="fa-solid fa-arrow-left"></i> Volver al curso</a>
+        </header>
+
+        <section class="editor-section">
+            <label for="editor">Escribe tu código Python</label>
+            <textarea id="editor" spellcheck="false"># Escribe aquí y pulsa "Ejecutar"
+# Ejemplo:
+nombre = "Python"
+print(f"Hola, {nombre}!")
+print("2 + 2 =", 2 + 2)</textarea>
+            <div class="run-bar">
+                <button type="button" id="run-btn"><i class="fa-solid fa-play"></i> Ejecutar</button>
+                <span class="status" id="status"></span>
+            </div>
+        </section>
+
+        <section class="output-section">
+            <label for="output">Salida (terminal)</label>
+            <pre id="output" class="empty">La salida de tu programa aparecerá aquí. La primera ejecución puede tardar unos segundos (carga de Python en el navegador).</pre>
+            <small>Python se ejecuta en el navegador con Pyodide. No se envían datos a ningún servidor.</small>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+    <script>
+        (function () {
+            const editor = document.getElementById('editor');
+            const output = document.getElementById('output');
+            const runBtn = document.getElementById('run-btn');
+            const statusEl = document.getElementById('status');
+
+            let pyodide = null;
+
+            function setStatus(msg) {
+                statusEl.textContent = msg;
+            }
+
+            function setOutput(text, isError) {
+                output.textContent = text || '';
+                output.classList.toggle('empty', !text);
+                output.classList.toggle('error', !!isError);
+            }
+
+            async function loadPyodideOnce() {
+                if (pyodide) return pyodide;
+                setStatus('Cargando Python…');
+                const indexURL = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/';
+                pyodide = await loadPyodide({ indexURL });
+                setStatus('');
+                return pyodide;
+            }
+
+            runBtn.addEventListener('click', async function () {
+                runBtn.disabled = true;
+                setOutput('');
+                try {
+                    const py = await loadPyodideOnce();
+                    let out = '';
+                    let err = '';
+                    py.setStdout({ batched: (msg) => { out += msg; } });
+                    py.setStderr({ batched: (msg) => { err += msg; } });
+                    await py.runPythonAsync(editor.value);
+                    setOutput(out + (err ? '\n' + err : ''), !!err);
+                } catch (e) {
+                    setOutput(e.message || String(e), true);
+                }
+                runBtn.disabled = false;
+            });
+        })();
+    </script>
+</body>
+</html>
