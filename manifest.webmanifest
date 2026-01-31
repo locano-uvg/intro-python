@@ -1,0 +1,32 @@
+{
+  "name": "Introducción a Python",
+  "short_name": "Intro Python",
+  "description": "Introducción a Python",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0C2C55",
+  "theme_color": "#0C2C55",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "./assets/01-intro-curso.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/01-intro-curso.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/01-intro-curso.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

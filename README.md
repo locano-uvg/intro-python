@@ -16,6 +16,20 @@ Las presentaciones están organizadas por número y tema, y se encuentran en for
 
 ---
 
+## 📱 Instalar como app (PWA) en iPhone/iPad
+
+El sitio es una **Progressive Web App (PWA)**. Para instalarlo en tu iPhone o iPad:
+
+1. Abre el sitio en **Safari** (Chrome en iOS no permite “Añadir a pantalla de inicio” para PWAs).
+2. Toca el botón **Compartir** (cuadrado con flecha hacia arriba).
+3. Desplázate y elige **“Añadir a pantalla de inicio”**.
+4. Confirma el nombre y toca **“Añadir”**.
+
+El icono aparecerá en tu pantalla de inicio y se abrirá a pantalla completa como una app.  
+**Nota:** Debes acceder al sitio por **HTTPS** (por ejemplo, GitHub Pages o tu propio dominio). No funciona con `file://`.
+
+---
+
 ## 📌 Notas
 
 - Las imágenes están optimizadas para ser usadas en la landing page del curso.
