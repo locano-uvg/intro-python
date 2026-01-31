@@ -1,18 +1,11 @@
-# 📚 Presentaciones – cc2005: Algoritmos y Programación Básica
+# 📚 Presentaciones – Introducción a Python
 
-Este repositorio contiene todas las presentaciones del curso **cc2005 – Algoritmos y Programación Básica**, impartido durante el **Semestre 01, 2026**.
+Este repositorio contiene todas las presentaciones para comprender los fundamentos básicos de python
 
 Las presentaciones están organizadas por número y tema, y se encuentran en formato Reveal.js, PDF y Markdown para facilitar el acceso desde cualquier plataforma.
 
 ---
 
-## 🖼️ Presentaciones disponibles
-
-| #   | Título                        | HTML                          | PDF                           | MD                            | Imagen                       |
-|-----|-------------------------------|-------------------------------|-------------------------------|-------------------------------|------------------------------|
-| 01  | Introducción al Curso         | ✅ [Ver](./presentations/01-intro-curso.html) | ✅ [Descargar](./presentations/01-intro-curso.pdf) | ✅ [Markdown](./presentations/01-intro-curso.md) | 🖼️ [Imagen](./assets/01-intro-curso.png) |
-
----
 
 ## 🚀 Tecnologías utilizadas
 
