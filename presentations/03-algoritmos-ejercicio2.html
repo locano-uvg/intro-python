@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicio 2 · Variables en pseudocódigo</title>
+<style>
+  :root{
+    --bg:#16221F;
+    --panel:#1C2A26;
+    --panel-2:#22322D;
+    --line:#354A43;
+    --chalk:#F3EEDC;
+    --chalk-dim:#9FB0A8;
+    --blue:#8FB8D9;
+    --amber:#E7A94C;
+    --coral:#E2745C;
+    --teal:#6FBFA0;
+    --shadow: 0 0 1px rgba(243,238,220,.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.035), transparent 40%),
+      radial-gradient(ellipse at 90% 100%, rgba(255,255,255,0.03), transparent 45%),
+      var(--bg);
+    color:var(--chalk);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    min-height:100%;
+    padding:28px 16px 90px;
+  }
+  .stage{ width:100%; max-width:760px; }
+  .eyebrow{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--chalk-dim); margin-bottom:18px;
+  }
+  .eyebrow b{color:var(--coral); font-weight:600;}
+
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-style:italic; font-weight:400;
+    font-size:clamp(24px,5vw,32px); line-height:1.25;
+    margin:0 0 14px; color:var(--chalk); min-height:2.6em;
+  }
+  .body-text{ font-size:15.5px; line-height:1.6; color:#D9E0DB; margin:0 0 22px; min-height:70px; }
+  .body-text .hl-blue{color:var(--blue); font-weight:600;}
+  .body-text .hl-amber{color:var(--amber); font-weight:600;}
+  .body-text .hl-coral{color:var(--coral); font-weight:600;}
+  .body-text .hl-teal{color:var(--teal); font-weight:600;}
+
+  /* Legend of types */
+  .legend{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+  .chip{
+    font-size:11.5px; font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    padding:6px 12px; border-radius:20px; border:1px solid var(--line);
+    color:var(--chalk-dim); opacity:.5; transition:all .3s;
+  }
+  .chip.on-amber{ border-color:var(--amber); color:var(--amber); opacity:1; background:rgba(231,169,76,0.08);}
+  .chip.on-coral{ border-color:var(--coral); color:var(--coral); opacity:1; background:rgba(226,116,92,0.08);}
+  .chip.on-teal{ border-color:var(--teal); color:var(--teal); opacity:1; background:rgba(111,191,160,0.08);}
+
+  .code-wrap{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:16px 18px; min-height:210px; margin-bottom:22px;
+  }
+  .code-wrap-label{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:10px;}
+  pre{ margin:0; font-family:'SFMono-Regular',Consolas,Menlo,monospace; font-size:14.5px; line-height:1.85; color:var(--chalk); text-shadow:var(--shadow); white-space:pre-wrap; }
+  .code-line{ display:block; opacity:0; animation:chalkIn .45s ease forwards; padding:1px 6px; border-radius:3px; margin:0 -6px; }
+  .code-line.current{ background:rgba(243,238,220,0.07); }
+  .cur-blue{ color:var(--blue); font-weight:700;}
+  .cur-amber{ color:var(--amber); font-weight:700;}
+  .cur-coral{ color:var(--coral); font-weight:700;}
+  .cur-teal{ color:var(--teal); font-weight:700;}
+  @keyframes chalkIn{ from{opacity:0; transform:translateY(6px); filter:blur(2px);} to{opacity:1; transform:translateY(0); filter:blur(0);} }
+  .placeholder{ color:var(--chalk-dim); font-style:italic; font-size:13.5px; }
+
+  /* Quiz */
+  .quiz{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 18px; margin-bottom:22px; }
+  .quiz-q{ font-size:14.5px; margin-bottom:14px; color:var(--chalk); }
+  .quiz-opts{ display:flex; gap:10px; }
+  .quiz-opt{
+    flex:1; padding:12px; border-radius:6px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--chalk); font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    font-size:14px; cursor:pointer; text-align:center; transition:all .2s;
+  }
+  .quiz-opt:hover{ border-color:var(--chalk-dim); }
+  .quiz-opt.correct{ border-color:var(--teal); background:rgba(111,191,160,0.12); color:var(--teal); font-weight:700;}
+  .quiz-opt.wrong{ border-color:var(--coral); background:rgba(226,116,92,0.12); color:var(--coral); }
+  .quiz-feedback{ margin-top:12px; font-size:13.5px; color:var(--chalk-dim); min-height:20px; }
+
+  .nav{ position:fixed; left:0; right:0; bottom:0; background:linear-gradient(0deg, var(--bg) 60%, transparent); padding:22px 16px 20px; display:flex; justify-content:center; }
+  .nav-inner{ width:100%; max-width:760px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+  .dots{ display:flex; gap:6px; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:var(--line); cursor:pointer; transition:all .25s;}
+  .dot.active{ background:var(--coral); width:18px; border-radius:3px; }
+  button.nav-btn{ font-family:inherit; font-size:13.5px; font-weight:600; padding:11px 20px; border-radius:24px; border:1px solid var(--line); background:var(--panel); color:var(--chalk); cursor:pointer; transition:all .2s; }
+  button.nav-btn.primary{ background:var(--coral); color:#221410; border-color:var(--coral); }
+  button.nav-btn:disabled{ opacity:.3; cursor:default; }
+  button.nav-btn:not(:disabled):hover{ filter:brightness(1.1); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="eyebrow">
+    <span><b>Ejercicio 2</b> · Guiado</span>
+    <span id="stepCounter">Paso 1 de 12</span>
+  </div>
+
+  <h1 id="title"></h1>
+  <div class="body-text" id="bodyText"></div>
+
+  <div class="legend" id="legend">
+    <div class="chip" id="chip-amber">Numérica</div>
+    <div class="chip" id="chip-coral">Texto</div>
+    <div class="chip" id="chip-teal">Booleana</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-wrap-label">Pseudocódigo</div>
+    <pre id="codeBox"></pre>
+  </div>
+
+  <div class="quiz" id="quiz" style="display:none;">
+    <div class="quiz-q">Si después de esto cambiamos <code>edad ← 26</code> y volvemos a ejecutar <code>ESCRIBIR edad</code>, ¿qué se mostraría?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="25">25</div>
+      <div class="quiz-opt" data-val="26">26</div>
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn" id="prevBtn">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn primary" id="nextBtn">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const codeLines = [
+  {text:'INICIO', indent:0, color:'blue'},
+  {text:'nombre ← "Ana"', indent:1, color:'coral'},
+  {text:'edad ← 25', indent:1, color:'amber'},
+  {text:'leGustaProgramar ← VERDADERO', indent:1, color:'teal'},
+  {text:'ESCRIBIR nombre', indent:1, color:'blue'},
+  {text:'ESCRIBIR edad', indent:1, color:'blue'},
+  {text:'ESCRIBIR leGustaProgramar', indent:1, color:'blue'},
+  {text:'FIN', indent:0, color:'blue'},
+];
+
+const steps = [
+  {
+    title:'El problema: guardar datos de una persona',
+    body:'Vamos a construir un pseudocódigo que guarde tres datos sobre una persona: su <span class="hl-coral">nombre</span>, su <span class="hl-amber">edad</span>, y si <span class="hl-teal">le gusta programar</span>. Cada dato necesita su propia variable.',
+    codeUpTo:-1, currentLine:-1, legend:[]
+  },
+  {
+    title:'Recordemos los tres tipos',
+    body:'Una variable <span class="hl-amber">numérica</span> guarda números. Una de <span class="hl-coral">texto</span> guarda palabras, siempre entre comillas. Una <span class="hl-teal">booleana</span> guarda solo VERDADERO o FALSO.',
+    codeUpTo:-1, currentLine:-1, legend:['amber','coral','teal']
+  },
+  {
+    title:'Empezamos con INICIO',
+    body:'Como en todo pseudocódigo, la primera línea marca dónde comienza el algoritmo.',
+    codeUpTo:1, currentLine:0, legend:[]
+  },
+  {
+    title:'Variable de texto: nombre',
+    body:'Guardamos el nombre con la flecha <span class="hl-coral">←</span>. Como es texto, va entre comillas: <span class="hl-coral">"Ana"</span>.',
+    codeUpTo:2, currentLine:1, legend:['coral']
+  },
+  {
+    title:'Variable numérica: edad',
+    body:'Guardamos la edad como número. A diferencia del texto, aquí <span class="hl-amber">no</span> usamos comillas.',
+    codeUpTo:3, currentLine:2, legend:['amber']
+  },
+  {
+    title:'Variable booleana: leGustaProgramar',
+    body:'Guardamos una condición de sí/no con <span class="hl-teal">VERDADERO</span> o <span class="hl-teal">FALSO</span>, también sin comillas.',
+    codeUpTo:4, currentLine:3, legend:['teal']
+  },
+  {
+    title:'Mostrar el nombre',
+    body:'Ahora usamos <span class="hl-blue">ESCRIBIR</span> para mostrar cada variable en pantalla, una por una. Empezamos por el nombre.',
+    codeUpTo:5, currentLine:4, legend:[]
+  },
+  {
+    title:'Mostrar la edad',
+    body:'Agregamos otra línea ESCRIBIR para la edad.',
+    codeUpTo:6, currentLine:5, legend:[]
+  },
+  {
+    title:'Mostrar el valor booleano',
+    body:'Y una última línea ESCRIBIR para la variable booleana.',
+    codeUpTo:7, currentLine:6, legend:[]
+  },
+  {
+    title:'Cerramos con FIN',
+    body:'Con esto el algoritmo queda completo: declaramos tres variables de distinto tipo y mostramos su contenido.',
+    codeUpTo:8, currentLine:7, legend:[]
+  },
+  {
+    title:'Una variable puede cambiar de valor',
+    body:'Esto es clave: una variable no es fija. Si reasignamos su valor durante la ejecución, lo nuevo reemplaza a lo anterior.',
+    codeUpTo:8, currentLine:-1, legend:[], showQuiz:true
+  },
+  {
+    title:'¡Listo! Tu segunda demostración guiada',
+    body:'Ya sabes declarar variables de los tres tipos, mostrarlas en pantalla, y que su valor puede cambiar. En el Ejercicio 3 lo harás tú solo, sin pasos guiados.',
+    codeUpTo:8, currentLine:-1, legend:[]
+  },
+];
+
+let idx = 0;
+
+function render(){
+  const s = steps[idx];
+  document.getElementById('stepCounter').textContent = `Paso ${idx+1} de ${steps.length}`;
+  document.getElementById('title').textContent = s.title;
+  document.getElementById('bodyText').innerHTML = s.body;
+
+  ['amber','coral','teal'].forEach(c=>{
+    const chip = document.getElementById('chip-'+c);
+    chip.className = 'chip' + (s.legend.includes(c) ? ' on-'+c : '');
+  });
+
+  const box = document.getElementById('codeBox');
+  box.innerHTML = '';
+  if(s.codeUpTo <= 0){
+    box.innerHTML = '<span class="placeholder">// aquí construiremos el pseudocódigo, línea por línea</span>';
+  } else {
+    for(let i=0;i<s.codeUpTo;i++){
+      const line = codeLines[i];
+      const span = document.createElement('span');
+      span.className = 'code-line' + (i===s.currentLine ? ' current' : '');
+      const indentStr = '    '.repeat(line.indent);
+      const colorClass = 'cur-' + line.color;
+      span.innerHTML = indentStr + `<span class="${i===s.currentLine ? colorClass : ''}">` + line.text + '</span>';
+      box.appendChild(span);
+    }
+  }
+
+  const quizEl = document.getElementById('quiz');
+  if(s.showQuiz){
+    quizEl.style.display = 'block';
+    document.querySelectorAll('.quiz-opt').forEach(o=>{ o.className='quiz-opt'; });
+    document.getElementById('quizFeedback').textContent = '';
+  } else {
+    quizEl.style.display = 'none';
+  }
+
+  document.getElementById('prevBtn').disabled = idx===0;
+  document.getElementById('nextBtn').textContent = idx===steps.length-1 ? 'Reiniciar ↺' : 'Siguiente →';
+
+  const dots = document.getElementById('dots');
+  dots.innerHTML='';
+  steps.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className='dot'+(i===idx?' active':'');
+    d.addEventListener('click', ()=>{ idx=i; render(); });
+    dots.appendChild(d);
+  });
+}
+
+document.querySelectorAll('.quiz-opt').forEach(opt=>{
+  opt.addEventListener('click', ()=>{
+    const val = opt.dataset.val;
+    document.querySelectorAll('.quiz-opt').forEach(o=>o.className='quiz-opt');
+    if(val==='26'){
+      opt.classList.add('correct');
+      document.getElementById('quizFeedback').textContent = '¡Correcto! edad ahora vale 26, porque la reasignación reemplazó el valor anterior.';
+    } else {
+      opt.classList.add('wrong');
+      document.querySelector('[data-val="26"]').classList.add('correct');
+      document.getElementById('quizFeedback').textContent = 'No — el valor anterior (25) ya no existe una vez que se reasigna la variable. Ahora vale 26.';
+    }
+  });
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(idx === steps.length-1){ idx=0; } else { idx = Math.min(idx+1, steps.length-1); }
+  render();
+});
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  idx = Math.max(idx-1,0); render();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+});
+
+render();
+</script>
+</body>
+</html>

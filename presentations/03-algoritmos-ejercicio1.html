@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicio 1 · Del diagrama al pseudocódigo</title>
+<style>
+  :root{
+    --bg:#16221F;
+    --panel:#1C2A26;
+    --panel-2:#22322D;
+    --line:#354A43;
+    --chalk:#F3EEDC;
+    --chalk-dim:#9FB0A8;
+    --blue:#8FB8D9;
+    --amber:#E7A94C;
+    --coral:#E2745C;
+    --shadow: 0 0 1px rgba(243,238,220,.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.035), transparent 40%),
+      radial-gradient(ellipse at 90% 100%, rgba(255,255,255,0.03), transparent 45%),
+      var(--bg);
+    color:var(--chalk);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    min-height:100%;
+    padding:28px 16px 90px;
+  }
+  .stage{
+    width:100%;
+    max-width:760px;
+  }
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--chalk-dim);
+    margin-bottom:18px;
+  }
+  .eyebrow b{color:var(--blue); font-weight:600;}
+  .reset-btn{
+    background:none;border:1px solid var(--line); color:var(--chalk-dim);
+    border-radius:20px; padding:5px 12px; font-size:11px; letter-spacing:.08em;
+    cursor:pointer; text-transform:uppercase;
+  }
+  .reset-btn:hover{border-color:var(--chalk-dim); color:var(--chalk);}
+
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(24px,5vw,32px);
+    line-height:1.25;
+    margin:0 0 14px;
+    color:var(--chalk);
+    min-height:2.6em;
+  }
+  .body-text{
+    font-size:15.5px;
+    line-height:1.6;
+    color:#D9E0DB;
+    margin:0 0 26px;
+    min-height:70px;
+  }
+  .body-text .hl-blue{color:var(--blue); font-weight:600;}
+  .body-text .hl-amber{color:var(--amber); font-weight:600;}
+  .body-text .hl-coral{color:var(--coral); font-weight:600;}
+
+  /* Diagram strip */
+  .diagram-wrap{ margin-bottom:22px; }
+  .diagram-label{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:10px;}
+  .strip{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:6px 2px 14px;
+    scrollbar-width:thin;
+  }
+  .node{
+    flex:0 0 auto;
+    min-width:92px;
+    padding:10px 8px;
+    text-align:center;
+    font-size:11.5px;
+    line-height:1.3;
+    font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    border:1px solid var(--line);
+    color:var(--chalk-dim);
+    background:var(--panel);
+    opacity:.45;
+    transition:all .35s ease;
+    position:relative;
+  }
+  .node.oval{ border-radius:40px; }
+  .node.rect{ border-radius:4px; }
+  .node.para{ border-radius:6px; transform:skewX(-8deg); }
+  .node.para span{ display:inline-block; transform:skewX(8deg); }
+  .node.active{ opacity:1; color:var(--bg); font-weight:700; box-shadow:0 0 0 2px rgba(0,0,0,0.15) inset; }
+  .node.active.c-blue{ background:var(--blue); border-color:var(--blue);}
+  .node.active.c-amber{ background:var(--amber); border-color:var(--amber);}
+  .node.active.c-coral{ background:var(--coral); border-color:var(--coral);}
+  .node.done{ opacity:.75; }
+
+  /* Code panel */
+  .code-wrap{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px 18px;
+    min-height:190px;
+    margin-bottom:26px;
+  }
+  .code-wrap-label{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:10px;}
+  pre{
+    margin:0;
+    font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    font-size:14.5px;
+    line-height:1.85;
+    color:var(--chalk);
+    text-shadow:var(--shadow);
+    white-space:pre-wrap;
+  }
+  .code-line{
+    display:block;
+    opacity:0;
+    transform:translateY(4px);
+    animation:chalkIn .45s ease forwards;
+    padding:1px 6px;
+    border-radius:3px;
+    margin:0 -6px;
+  }
+  .code-line.current{ background:rgba(243,238,220,0.07); }
+  .code-line .kw{ color:var(--blue); }
+  .code-line .cur-blue{ color:var(--blue); font-weight:700;}
+  .code-line .cur-amber{ color:var(--amber); font-weight:700;}
+  .code-line .cur-coral{ color:var(--coral); font-weight:700;}
+  @keyframes chalkIn{
+    from{ opacity:0; transform:translateY(6px); filter:blur(2px); }
+    to{ opacity:1; transform:translateY(0); filter:blur(0); }
+  }
+  .placeholder{ color:var(--chalk-dim); font-style:italic; font-size:13.5px; }
+
+  /* Nav */
+  .nav{
+    position:fixed; left:0; right:0; bottom:0;
+    background:linear-gradient(0deg, var(--bg) 60%, transparent);
+    padding:22px 16px 20px;
+    display:flex; justify-content:center;
+  }
+  .nav-inner{
+    width:100%; max-width:760px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+  }
+  .dots{ display:flex; gap:6px; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:var(--line); cursor:pointer; transition:all .25s;}
+  .dot.active{ background:var(--blue); width:18px; border-radius:3px; }
+  button.nav-btn{
+    font-family:inherit; font-size:13.5px; font-weight:600; letter-spacing:.02em;
+    padding:11px 20px; border-radius:24px; border:1px solid var(--line);
+    background:var(--panel); color:var(--chalk); cursor:pointer;
+    transition:all .2s;
+  }
+  button.nav-btn.primary{ background:var(--blue); color:#152420; border-color:var(--blue); }
+  button.nav-btn:disabled{ opacity:.3; cursor:default; }
+  button.nav-btn:not(:disabled):hover{ filter:brightness(1.1); }
+
+  @media (max-width:480px){
+    .node{ min-width:78px; font-size:10.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="eyebrow">
+    <span><b>Ejercicio 1</b> · Guiado</span>
+    <span id="stepCounter">Paso 1 de 9</span>
+  </div>
+
+  <h1 id="title"></h1>
+  <div class="body-text" id="bodyText"></div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Diagrama de flujo (referencia)</div>
+    <div class="strip" id="strip"></div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-wrap-label">Pseudocódigo</div>
+    <pre id="codeBox"></pre>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn" id="prevBtn">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn primary" id="nextBtn">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const nodes = [
+  {label:'INICIO', shape:'oval', color:'blue'},
+  {label:'LEER numero1', shape:'para', color:'amber'},
+  {label:'LEER numero2', shape:'para', color:'amber'},
+  {label:'suma ← numero1 + numero2', shape:'rect', color:'coral'},
+  {label:'ESCRIBIR suma', shape:'para', color:'amber'},
+  {label:'FIN', shape:'oval', color:'blue'},
+];
+
+const codeLines = [
+  {text:'INICIO', indent:0, color:'blue'},
+  {text:'LEER numero1', indent:1, color:'amber'},
+  {text:'LEER numero2', indent:1, color:'amber'},
+  {text:'suma ← numero1 + numero2', indent:1, color:'coral'},
+  {text:'ESCRIBIR suma', indent:1, color:'amber'},
+  {text:'FIN', indent:0, color:'blue'},
+];
+
+// step -> { title, body, activeNode (index or -1), codeUpTo (number of lines shown, -1 none), currentLine }
+const steps = [
+  {
+    title:'¿Qué es el pseudocódigo?',
+    body:'Es un puente entre el <span class="hl-blue">diagrama de flujo</span> y un lenguaje de programación real, como Python. Describe la lógica de un algoritmo en pasos de texto simples, en el mismo orden en que se deben ejecutar.',
+    activeNode:-1, codeUpTo:-1, currentLine:-1
+  },
+  {
+    title:'Partimos de un diagrama que ya conoces',
+    body:'Este diagrama pide dos números al usuario, los suma y muestra el resultado. Vamos a traducir, figura por figura, cada parte a una línea de pseudocódigo.',
+    activeNode:-1, codeUpTo:-1, currentLine:-1, showAllDim:true
+  },
+  {
+    title:'INICIO y FIN marcan los límites',
+    body:'El <span class="hl-blue">óvalo</span> de inicio de un diagrama se convierte en la palabra <span class="hl-blue">INICIO</span>. Toda línea del algoritmo va después de esta.',
+    activeNode:0, codeUpTo:1, currentLine:0
+  },
+  {
+    title:'Pedir un dato: LEER',
+    body:'El <span class="hl-amber">paralelogramo</span> de entrada (donde el diagrama pide un dato) se convierte en <span class="hl-amber">LEER</span>, seguido del nombre de la variable donde se guarda ese dato.',
+    activeNode:1, codeUpTo:2, currentLine:1
+  },
+  {
+    title:'Repetimos por cada dato de entrada',
+    body:'El diagrama pide un segundo número, así que agregamos otra línea <span class="hl-amber">LEER</span>. Cada figura de entrada del diagrama es una línea LEER en el pseudocódigo.',
+    activeNode:2, codeUpTo:3, currentLine:2
+  },
+  {
+    title:'Calcular: el rectángulo de proceso',
+    body:'El <span class="hl-coral">rectángulo</span> del diagrama (donde ocurre un cálculo) se traduce como una asignación: el nombre de la variable, la flecha <span class="hl-coral">←</span>, y la operación.',
+    activeNode:3, codeUpTo:4, currentLine:3
+  },
+  {
+    title:'Mostrar un resultado: ESCRIBIR',
+    body:'El <span class="hl-amber">paralelogramo</span> de salida (donde el diagrama muestra algo en pantalla) se convierte en <span class="hl-amber">ESCRIBIR</span>, seguido de lo que se quiere mostrar.',
+    activeNode:4, codeUpTo:5, currentLine:4
+  },
+  {
+    title:'Cerramos con FIN',
+    body:'El último <span class="hl-blue">óvalo</span> del diagrama, el que marca el final, se convierte en la palabra <span class="hl-blue">FIN</span>. Con esto, el algoritmo queda completo.',
+    activeNode:5, codeUpTo:6, currentLine:5
+  },
+  {
+    title:'¡Listo! Ya tradujiste tu primer diagrama',
+    body:'Cada figura del diagrama corresponde exactamente a una línea del pseudocódigo, en el mismo orden. Esa es la idea central para todo lo que viene: el pseudocódigo describe la misma lógica, solo que en texto.',
+    activeNode:-1, codeUpTo:6, currentLine:-1, showAllDim:false
+  },
+];
+
+let idx = 0;
+
+function render(){
+  const s = steps[idx];
+  document.getElementById('stepCounter').textContent = `Paso ${idx+1} de ${steps.length}`;
+  document.getElementById('title').textContent = s.title;
+  document.getElementById('bodyText').innerHTML = s.body;
+
+  // diagram strip
+  const strip = document.getElementById('strip');
+  strip.innerHTML = '';
+  nodes.forEach((n,i)=>{
+    const el = document.createElement('div');
+    el.className = 'node ' + n.shape;
+    if(i === s.activeNode){ el.className += ` active c-${n.color}`; }
+    else if(s.showAllDim === true || (s.codeUpTo>i)){ el.className += ' done'; }
+    el.innerHTML = `<span>${n.label}</span>`;
+    strip.appendChild(el);
+  });
+  if(s.activeNode>=0){
+    strip.children[s.activeNode].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }
+
+  // code box
+  const box = document.getElementById('codeBox');
+  box.innerHTML = '';
+  if(s.codeUpTo <= 0){
+    box.innerHTML = '<span class="placeholder">// aquí construiremos el pseudocódigo, línea por línea</span>';
+  } else {
+    for(let i=0;i<s.codeUpTo;i++){
+      const line = codeLines[i];
+      const span = document.createElement('span');
+      span.className = 'code-line' + (i===s.currentLine ? ' current' : '');
+      span.style.animationDelay = (i===s.currentLine ? '0s' : '');
+      const indentStr = '    '.repeat(line.indent);
+      const colorClass = 'cur-' + line.color;
+      span.innerHTML = indentStr + `<span class="${i===s.currentLine ? colorClass : ''}">` + line.text + '</span>';
+      box.appendChild(span);
+    }
+  }
+
+  document.getElementById('prevBtn').disabled = idx===0;
+  document.getElementById('nextBtn').textContent = idx===steps.length-1 ? 'Reiniciar ↺' : 'Siguiente →';
+
+  const dots = document.getElementById('dots');
+  dots.innerHTML='';
+  steps.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className='dot'+(i===idx?' active':'');
+    d.addEventListener('click', ()=>{ idx=i; render(); });
+    dots.appendChild(d);
+  });
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(idx === steps.length-1){ idx=0; } else { idx = Math.min(idx+1, steps.length-1); }
+  render();
+});
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  idx = Math.max(idx-1,0); render();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+});
+
+render();
+</script>
+</body>
+</html>
